@@ -1,0 +1,18 @@
+.dashboardStyle {
+    border: 1px solid #38246b;
+    border-radius: 15px;
+    background: linear-gradient(-45deg, #89CFF0, #FFDAB9);
+    box-shadow: 0 0 15px 5px #89CFF0, 0 0 15px 10px #FFDAB9; 
+    background-size: 400% 400%;
+    -webkit-animation: gradient 25s ease infinite;
+    animation: gradient 25s ease infinite; 
+    background: linear-gradient(-45deg, #89CFF0, #dcdae6);
+    background-size: 400% 400%;
+    -webkit-animation: gradient 25s ease infinite;
+    animation: gradient 25s ease infinite; 
+  }
+  
+  .dashboardCard h5 {
+    font-weight: bold;
+  }
+  
