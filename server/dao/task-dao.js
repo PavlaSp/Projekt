@@ -37,16 +37,7 @@ function getAllTasks() {
   });
   return tasks.flat();
 }
-// Method to write a monthly total amount to a file
-function find(childId, dateFinished) {
-  const allTasks = getAllTasks();
-  const tasks = allTasks.filter(
-    task =>
-      task.childId === childId &&
-      moment(task.dateFinished, "YYYY-MM-DD").format("YYYY-MM") === dateFinished
-  );
-  return tasks;
-}
+
 function findDetailed(childId, dateFinished) {
   const allTasks = getAllTasks();
   const tasks = allTasks.filter(
@@ -62,6 +53,17 @@ function findDetailed(childId, dateFinished) {
     rewardedAmount: task.rewardedAmount
   }));
 }
+// Method to write a monthly total amount to a file
+function find(childId, dateFinished) {
+  const allTasks = getAllTasks();
+  const tasks = allTasks.filter(
+    task =>
+      task.childId === childId &&
+      moment(task.dateFinished, "YYYY-MM-DD").format("YYYY-MM") === dateFinished
+  );
+  return tasks;
+}
+
 // Method to write an task to a file
 function create(task) {
   try {
@@ -91,23 +93,25 @@ function update(task) {
 }
 
 
-// Method to list tasks in a folder
-function list() {
+// Method to list tasks with dateUntil
+function list(dateUntil) {
   try {
-    const files = fs.readdirSync(taskFolderPath);
-    const taskList = files.map((file) => {
-      const fileData = fs.readFileSync(
-        path.join(taskFolderPath, file),
-        "utf8"
-      );
-      return JSON.parse(fileData);
+    let tasks = [];
+    let files = fs.readdirSync(taskFolderPath);
+    
+    files.forEach(file => {
+      const fileData = JSON.parse(fs.readFileSync(path.join(taskFolderPath, file), "utf8")); 
+      if (fileData.dateUntil === dateUntil) {
+        tasks.push(fileData);
+      }
     });
-    taskList.sort((a, b) => new Date(a.date) - new Date(b.date));
-    return taskList;
+    return tasks;
   } catch (error) {
-    throw { code: "failedToListTasks", message: error.message };
+    if (error.code === "ENOENT") return null;
+    throw { code: "failedToReadTask", message: error.message };
   }
 }
+
 
 
 module.exports = {
@@ -119,4 +123,4 @@ module.exports = {
   update,
   list,
   find,
-}; 
+  }; 

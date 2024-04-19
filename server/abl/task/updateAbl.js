@@ -56,7 +56,7 @@ task.updated = new Date();
       
     let dateFinished = moment(task.dateFinished, 'YYYY-MM', true);
     if (dateFinished.isAfter(deadline, 'month')) {
-      res.status(400).json({ message: "Date finished is after date until" });
+      res.status(400).json({  code: "dateOverDeadline", message: "Date finished is after date until" });
       return;
     }
 

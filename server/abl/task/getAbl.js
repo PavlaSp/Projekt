@@ -2,14 +2,14 @@ const Ajv = require("ajv");
 const ajv = new Ajv();
 const taskDao = require("../../dao/task-dao.js");
 
-const schema = {
-  type: "object",
-  properties: {
-   taskId: { type: "string" },
-  },
-  required: ["taskId"],
-  additionalProperties: false,
-};
+const schema = { 
+  type: "object", 
+  properties:{ 
+    taskId: { type: "string" },
+   }, 
+required: ["taskId"], 
+additionalProperties: false, };
+
 
 async function GetAbl(req, res) {
   try {
@@ -27,6 +27,7 @@ async function GetAbl(req, res) {
       return;
     }
 
+    
     // read task by given id
     const task = taskDao.get(reqParams.taskId);
     if (!task) {

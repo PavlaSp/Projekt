@@ -20,9 +20,9 @@ function get(childId, yearMonth) {
   }
 }
 
-function update({ childId, yearMonth, pocketAmount, totalAmount }) {
+function update({ childId, yearMonth, pocketAmount, totalAmount, totalTaskValue }) {
   try {
-    const monthly = { childId, yearMonth, pocketAmount, totalAmount };
+    const monthly = { childId, yearMonth, pocketAmount, totalAmount, totalTaskValue };
     const fileName = getFileName(childId, yearMonth);
     const filePath = path.join(monthlyFolderPath, fileName);
     const fileData = JSON.stringify(monthly);

@@ -36,7 +36,7 @@ async function UpdateAbl(req, res) {
     
     const totalTaskValue = tasks.reduce((total, task) => total + task.rewardedAmount, 0);
     
-    let monthly = await monthlyDao.get(childId, yearMonth); // Fetch the month data if exists.
+    let monthly = await monthlyDao.get(childId, yearMonth); 
 
     // If monthly data doesn't exist, initialize new data.
     if (!monthly) {
@@ -48,6 +48,9 @@ async function UpdateAbl(req, res) {
 
     // Update total amount 
     monthly.totalAmount = monthly.pocketAmount + totalTaskValue;
+
+    //Add totalTaskValue
+    monthly.totalTaskValue = totalTaskValue;
     
     const updatedMonthly = await monthlyDao.update(monthly);
     
