@@ -6,7 +6,7 @@ function getFileName(childId, yearMonth) {
   return `${childId}-${yearMonth}.json`;
 }
 
-function get(childId, yearMonth) {
+function get( childId, yearMonth) {
   try {
     const fileName = getFileName(childId, yearMonth);
     const filePath = path.join(monthlyFolderPath, fileName);
@@ -17,6 +17,19 @@ function get(childId, yearMonth) {
     return null;
   } catch (error) {
     throw { code: 'failedToGetMonthlyAmount', message: error.message };
+  }
+}
+// Method to list monthly in a folder
+function list() {
+  try {
+    const files = fs.readdirSync(monthlyFolderPath);
+    const monthlyList = files.map((file) => {
+      const fileData = fs.readFileSync(path.join(monthlyFolderPath, file), "utf8");
+      return JSON.parse(fileData);
+    });
+    return monthlyList;
+  } catch (error) {
+    throw { code: "failedToListMonthly", message: error.message };
   }
 }
 
@@ -35,5 +48,6 @@ function update({ childId, yearMonth, pocketAmount, totalAmount, totalTaskValue 
 
 module.exports = {
    get,
-   update
+   update,
+   list
 };

@@ -19,12 +19,19 @@ const schema = {
 };
 async function GetAbl(req, res) {
     try {
-        const { childId, dateFinished } = req.body;
+        const { childId, dateFinished } = req.query;
         if (!childId || !dateFinished) throw new Error("Missing childId or date in request body.");
 
      // Get child details
         let childDetails = await childDao.get(childId);
-        if (!childDetails) throw new Error("Child not found.");
+        if (!childId || !dateFinished) {
+          res.status(400).json({
+            code: "missingParameter",
+            message: "Missing childId or dateFinished in request."
+          });
+          return;
+        }
+        
     
          
     // validate input
@@ -46,6 +53,13 @@ async function GetAbl(req, res) {
          });
          return;
        }
+       if (!task) {
+        res.status(404).json({
+          code: "taskNotFound",
+          message: `No tasks found for childId ${childId} and date ${dateFinished}`,
+        });
+        return;
+      }
    
        res.json(task);
 

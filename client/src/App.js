@@ -1,43 +1,54 @@
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import Dashboard from "./Dashboard";
-import ShowSetting from "./ShowSetting";
 import NavigationBar from './NavigationBar';
 import "./App.css";
-import SettingsCard from './SettingsCard';
+import Profile from './Profile';
+import ShowSetting from "./ShowSetting"; 
+
 
 function App() {
+  const [selectedDate, updateSelectedDate] = useState(new Date());
   const [pocketMoney, setPocketMoney] = useState([]);
   const [rewardMoney, setRewardMoney] = useState([]);
-
-  const handleSavePocketMoney = (newPocketMoney) => {
-    setPocketMoney(prev => [...prev, newPocketMoney]);
-  };
-
-  const handleSaveRewardMoney = (newRewardMoney) => {
-    setRewardMoney(prev => [...prev, newRewardMoney]);
-  };
-
-  const handleCompleteReward = (index, completed) => {
-    setRewardMoney(rewardMoney.map((reward, i) => 
-      i === index ? { ...reward, completed } : reward
-    ));
-  };
+  const [savedDates, setSavedDates] = useState([]);
+  
 
   return (
+
+    <div style={componentStyle()}>
+    
     <Router>
+    <Profile>
       <nav>
-      <NavigationBar/>
-            
-        <SettingsCard/>
+      <div class>  
+      <NavigationBar style={{ backgroundColor: "rgb(#FFDAB9)", height:"100px", border:"1px solid #38246b" }} /> 
+    
+                 
+      </div>
       </nav>
 
       <Routes>
-        <Route path="/dashboard" element={<Dashboard pocketMoney={pocketMoney} rewardMoney={rewardMoney} handleCompleteReward={handleCompleteReward} />} />
-        <Route path="/settings" element={<ShowSetting handleSavePocketMoney={handleSavePocketMoney} handleSaveRewardMoney={handleSaveRewardMoney} />} />
+      
+      <Route path="/:childId" element={<Dashboard />} /> 
+     <Route path="/settings" element={<ShowSetting />} />
       </Routes>
+      </Profile>
     </Router>
+    
+    </div>
   );
+}
+function componentStyle() {
+  return {
+    height: "100vh",
+    width: "100%",
+    display: "flex",
+    flexDirection: "column",
+   
+    overflowY: "auto",
+    backgroundColor: "rgb(234 238 242)"
+  };
 }
 
 export default App;

@@ -1,59 +1,55 @@
-import React, { useState } from 'react';
-import "./App.css";
+import React, { useContext, useState } from 'react';
+import Profile from './Profile';
 import  "./DashboardStyle.css";
-import Icon from '@mdi/react';
-import { mdiCalendarMonth } from '@mdi/js';
+import { ProfileContext } from './Profile';
+import ShowMonth from "./ShowMonth";
+import Calendar from "./Calendar";
 
-function Dashboard({ pocketMoney, rewardMoney, handleCompleteReward }) {
-  const [selectedMonth, setSelectedMonth] = useState("");
-
-  const totalForMonth = () => {
-    let total = 0;
-
-    pocketMoney.forEach((item) => {
-      if (item.month === selectedMonth) {
-        total += Number(item.amount);
-      }
-    });
-
-    rewardMoney.forEach((item) => {
-      if (item.month === selectedMonth && item.completed) {
-        total += Number(item.reward);
-      }
-    });
-
-    return total;
+function Dashboard() {
+ 
+  const { activeProfile } = useContext(ProfileContext);
+  const [savedDates, setSavedDates] = useState([]);
+  const [selectedDate, setSelectedDate] = useState(new Date());
+  const updateSelectedDate = (date) => {
+    setSelectedDate(date); 
+    setSavedDates([...savedDates, date]);
   };
-
   return (
-    <div> 
-      <p> 
-      <h3>Dashboard</h3></p>
-      <div class='dashboardStyle'> 
-      <h3>Pocket Money Amount for Month</h3>
-      <p></p>
-      <Icon path={mdiCalendarMonth} size={1}/>{"  "}
-      Select Month: 
-      <input type="text" value={selectedMonth} onChange={(e) => setSelectedMonth(e.target.value)} />
-      <p>
-      Pocket Money a Reward Money za měsíc: </p>
-      {
-        rewardMoney.map((reward, i) => (
-          <div key={i}>
-            {reward.subject} - {reward.reward} 
-            <input type="checkbox" checked={reward.completed} 
-             onChange={() => handleCompleteReward(i, !reward.completed)} />
-             <span class="badge text-bg-warning">Warning</span>
-             
-          </div>
-                      
-        ))
-      }
-      
-      Celkem za měsíc: {totalForMonth()}
+    <div >
+    <div style={bodyStyle()}>
+    <div class='dashboardStyle'> 
+    <div class style ={{margin:"2px"}}><h4>Your are logged as: Parent</h4>
+    <h4>{activeProfile ? ` ${activeProfile} Pocket Money` : 'Select a profile'}</h4>
+   
     </div>
+    
+    <div style={{ textAlign: 'right', padding: '20px' }}>
+     <h4>Pick a date   <Calendar selectedDate={selectedDate} updateSelectedDate={updateSelectedDate} /></h4></div>
+       
     </div>
+   
+
+    {savedDates.map((date, index) => (
+        <ShowMonth key={index} selectedDate={date} />
+      ))}
+        
+</div>
+</div>
+
+     
+   
   );
 }
-
+function bodyStyle() {
+  return {
+    
+    padding: "30px",
+    alignItems:"top",
+    maxHeight:"100vh",
+    overflowY:"auto",
+    justifyContent:"space-between",
+    flexDirection: 'column',
+    
+    };
+}
 export default Dashboard;

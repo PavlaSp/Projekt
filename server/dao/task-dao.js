@@ -93,25 +93,20 @@ function update(task) {
 }
 
 
-// Method to list tasks with dateUntil
-function list(dateUntil) {
+// Method to list tasks 
+
+function list() {
   try {
-    let tasks = [];
-    let files = fs.readdirSync(taskFolderPath);
-    
-    files.forEach(file => {
-      const fileData = JSON.parse(fs.readFileSync(path.join(taskFolderPath, file), "utf8")); 
-      if (fileData.dateUntil === dateUntil) {
-        tasks.push(fileData);
-      }
+    const files = fs.readdirSync(taskFolderPath);
+    const taskList = files.map((file) => {
+      const fileData = fs.readFileSync(path.join(taskFolderPath, file), "utf8");
+      return JSON.parse(fileData);
     });
-    return tasks;
+    return taskList;
   } catch (error) {
-    if (error.code === "ENOENT") return null;
     throw { code: "failedToReadTask", message: error.message };
   }
 }
-
 
 
 module.exports = {
