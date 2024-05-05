@@ -1,10 +1,10 @@
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
 import DatePicker from "react-datepicker";
 import { Button, Modal } from 'react-bootstrap';
 import Icon from '@mdi/react';
 import { mdiCalendarMonth } from '@mdi/js';
 import "react-datepicker/dist/react-datepicker.css";
-import ShowMonth from "./ShowMonth";
+
 
 
 const Calendar = ({updateSelectedDate}) => {
@@ -16,9 +16,9 @@ const Calendar = ({updateSelectedDate}) => {
   setSavedDates(savedDates => [...savedDates, startDate]);
 
   // Převod datumu na formát 'YYYY-MM'
-  const month = startDate.getMonth() + 1; // JavaScript počítá měsíce od 0
+  const month = startDate.getMonth() + 1; 
   const year = startDate.getFullYear();
-  const formattedDate = `${year}-${month < 10 ? `0${month}` : month}`; // Přidání 0 pro měsíce < 10
+  const formattedDate = `${year}-${month < 10 ? `0${month}` : month}`; 
 
   updateSelectedDate(formattedDate);
   setModalShow(false);

@@ -7,16 +7,16 @@ import { ProfileContext } from './Profile';
 import "./App.css";
 
 function NavigationBar() {
-  const { childList, activeProfile, setActiveProfile } = useContext(ProfileContext);
+  const { childList, activeProfile, setActiveProfile, setSelectedDate,  } = useContext(ProfileContext);
   const location = useLocation ();
   
  
  return (
-<nav class="navbar navbar-expand-lg" style={componentStyle()} >
-  <div class="container-fluid">
+<nav className="navbar navbar-expand-lg" style={componentStyle()} >
+  <div className="container-fluid">
   <div> 
   <Icon path={mdiSack} size={1} color={"grey"}/>
-  <a class="navbar-brand" href="#">REWARD <p style = {{margin: "0", paddingTop:"0,3px"}}></p> Pocket Money</a>
+  <a class="navbar-brand" >REWARD <p style = {{margin: "0", paddingTop:"0,3px"}}></p> Pocket Money</a>
        </div>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
@@ -32,7 +32,7 @@ function NavigationBar() {
         
       <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-         Profile of {activeProfile}
+         Profile of {activeProfile.childName}
           </a>
           <ul class="dropdown-menu">
 
@@ -40,8 +40,12 @@ function NavigationBar() {
                 <li key={index}>
                   <Link 
                     to={`/${child.childName}`} 
-                    onClick={() => setActiveProfile(child.childName)}
-                    className={activeProfile === child.childName ? 'nav-link active' : 'nav-link'}
+                    onClick={() => {
+                      setActiveProfile(child);
+                      const currentDate = new Date();
+                      setSelectedDate(`${currentDate.getFullYear()}-${currentDate.getMonth()+1}`);
+                    }}
+                    className={activeProfile.childName === child.childName? 'nav-link active' : 'nav-link'}
                   >
                     Profile of {child.childName}
                     </Link>

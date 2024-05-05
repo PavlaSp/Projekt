@@ -1,32 +1,31 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import "./App.css";
 import  "./DashboardStyle.css";
-import { useContext } from 'react';
 import { ProfileContext } from './Profile';
-
 
 function ShowMonth({selectedDate}) {
  
   const [isCardVisible, setCardVisible] = useState(true);
-  const {childList, monthlyList, activeProfile} = React.useContext(ProfileContext);
-   // Kontrola, zda jsou data dostupná
-   if (!childList.length || !monthlyList.length) {
-    return <div>Loading...</div>;  // Vrátí loading stav, pokud data nejsou dostupná
+  const {monthlyList, taskList, activeProfile} = React.useContext(ProfileContext);
+  if (!selectedDate || !activeProfile) {
+    return null; 
   }
-  
+   
 const handleCloseCard = () => {
   setCardVisible(false);
 };
 if (!isCardVisible) {
   return null;
 }
-const childData = childList.find(child => child.childId === activeProfile);
+
 console.log("selectedDate",selectedDate);
 const date = new Date(selectedDate || Date.now());
 const selectedDateFormatted = date.toISOString().slice(0,7);
 console.log("Selected Date Formatted", selectedDateFormatted);
 
-let monthlyData = monthlyList.find(monthly => monthly.yearMonth === selectedDateFormatted);
+let monthlyData = monthlyList.filter(
+  (monthly) => monthly.yearMonth === selectedDateFormatted && monthly.childId === activeProfile.id
+)[0];
 console.log("Monthly Data", monthlyData);
 
 
@@ -34,57 +33,108 @@ let pocketAmount = monthlyData ? monthlyData.pocketAmount: 0;
 let totalAmount = monthlyData ? monthlyData.totalAmount : 0;
 let totalTaskValue = monthlyData ? monthlyData.totalTaskValue : 0;
 
+let taskData = taskList.filter(
+  (task) => (task.dateUntil === selectedDateFormatted || task.dateFinished === selectedDateFormatted) && task.childId === activeProfile.id
+);
+taskData = taskData ? taskData : [];
+console.log("Tasks", taskData);
+
+
+let unfinishedTasks = taskData.filter(task => !task.dateFinished && task.dateUntil === selectedDateFormatted);
+let finishedTasks = taskData.filter(task => task.dateFinished);
+
+const handleFinishTask = (id, selectedDateFormatted) => {
+  fetch('http://localhost:8000/task/update', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      taskId: id,
+      dateFinished: selectedDateFormatted,
+    }),
+  })
+  .then((response) => {
+    if (response.ok) {
+      alert('Fulfilled task was successfully saved.');
+    } else {
+      throw new Error('Something went wrong.');
+    }
+  })
+  .catch((error) => console.log(error));
+};
+
+let unfinishedTaskList = unfinishedTasks.map(task => {
+  return (
+    <div key={task.id}>
+      <div className="hstack gap-3"  >
+      <div className="p-1"> <p style={{ fontSize: '15px'}}>Reward: {task.rewardedAmount} Kč </p>
+      </div>
+      <div className="p-1"> <p style={{ fontSize: '15px'}}> for  Subject: {task.taskName}  and Grade: {task.grade} </p>
+      </div>
+      <div className="p-1" >
+    <input 
+  className="form-check-input" type="checkbox" value="" id="flexCheckDefault"
+  disabled={new Date() > new Date(task.dateUntil)} 
+  onChange={() => handleFinishTask(task.id, selectedDateFormatted)} />
+  </div>  
+  </div>
+  </div>
+  )
+});
+
+let finishedTaskList = finishedTasks.map(task => {
+  return (
+    
+    <div key={task.id}>
+      <div className="hstack gap-3"  >
+      <div className="p-1"> <p style={{ fontSize: '15px'}}>Reward: {task.rewardedAmount} Kč </p>
+      </div>
+      <div className="p-1"> <p style={{ fontSize: '15px'}}> for  Subject: {task.taskName}  and Grade: {task.grade} </p>
+      </div>
+  </div>
+  </div>
+ 
+  )
+});
+
   return (
    
     <div style={bodyStyle()}> 
-
+   <div className="card text-end" >   
      
-     <div className="card text-end" >
-     
-     
-      <div class='dashboardStyle'>  
-
+      <div className='dashboardStyle'>  
       <p> </p>
     
-      
       <button type="button" className="btn-close" onClick={handleCloseCard} aria-label="Close" class={ 'dashboardStyle' }>Close the card</button>
       <div style={{textAlign:"right", paddingRight:"20px"}}><h2><p>{new Date(selectedDate).toLocaleString('en-us', { month: 'long', year: 'numeric' })}</p></h2>
         </div> 
        
     <p> </p>
     
-    <div class="hstack gap-3">
-    <div class="p-4"><p style ={{margin:"0 30px"}}><h4>Pocket Money: {totalAmount} </h4></p></div>
-     
-    <div class="p-4"><h4> Regular Money: {pocketAmount}</h4></div>
-    <div class="p-4"><h4> Rewards Gained {totalTaskValue}</h4></div>
+    <div className="hstack gap-3">
+    <div className="p-2"><p style ={{margin:"0 30px"}}><h4> Total Pocket Money: {totalAmount} Kč = </h4></p></div>
+     <div className="p-2"><h4> Regular Money: {pocketAmount} Kč </h4></div>
+    <div className="p-2"><h4> + Rewards Gained: {totalTaskValue} Kč </h4></div>
    
     </div>
-
-    <p class="d-inline-flex gap-1">
-  <a class="btn btn-success" data-bs-toggle="collapse" href="#multiCollapseExample1" role="button" aria-expanded="false" aria-controls="multiCollapseExample1">Fulfilled tasks
-    <span class="badge text-bg-secondary">4</span></a>   
-</p>
-<div class="row">
-  <div class="col">
-    <div class="collapse multi-collapse" id="multiCollapseExample1">
-      <div class="card card-body">
-        Some placeholder:  content for the first collapse component of this multi-collapse example. This panel is hidden by default but revealed when the user activates the relevant trigger.
+    <div className="card">
+    <div className='dashboardStyle'> 
+  <div className="card-header" style={{ border: "2px solid green", backgroundColor: "#c1d5c5", fontSize: '25px', fontWeight: 'bold' }}>
+  Finished Tasks in this Month:
+  </div>
+    <h5 className="card-text" style={{textAlign:"left", paddingLeft:"20px"}}> {finishedTaskList} </h5>
+    </div>
+    </div>
+    </div>
+      <div className='dashboardStyle'> 
+      <div className="card-header" style={{ border: "2px solid green", backgroundColor: "#f7dcba", fontSize: '25px', fontWeight: 'bold' }}>
+         Waiting Tasks to be finished: 
+    </div>
+    <h5 className="card-text" style={{textAlign:"left", paddingLeft:"20px"}}> {unfinishedTaskList} </h5>
       </div>
-    </div>
-  </div>
-  <div class="col">
-    <div class="collapse multi-collapse" id="multiCollapseExample2">
-       </div>
-  
-  </div>
-</div>
-</div>
-     
-      </div>  
-     </div>
-  
-   
+      </div>
+      </div>
+    
+       
   );
 }
 function bodyStyle() {
@@ -93,6 +143,7 @@ function bodyStyle() {
     padding: "30px",
     alignItems:"center",
     ustifyContent:"space-between",
+    marginBottom:"5px",
     
     };
 }

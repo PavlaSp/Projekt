@@ -10,9 +10,10 @@
     background-size: 400% 400%;
     -webkit-animation: gradient 25s ease infinite;
     animation: gradient 25s ease infinite; 
+
   }
   
   .dashboardCard h5 {
     font-weight: bold;
   }
-  
+ 
