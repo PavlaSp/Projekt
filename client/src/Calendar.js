@@ -29,7 +29,7 @@ const Calendar = ({updateSelectedDate}) => {
       <Button onClick={() => setModalShow(true)}><Icon path={mdiCalendarMonth} size={1}/></Button>
 
       <Modal show={modalShow} onHide={() => setModalShow(false)}>
-        <Modal.Header closeButton>
+        <Modal.Header >
           <Modal.Title>Pick a date</Modal.Title>
         </Modal.Header>
         <Modal.Body>

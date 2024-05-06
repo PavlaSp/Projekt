@@ -23,8 +23,11 @@ function App() {
             <Route path="/settings" element={<ShowSetting />} />
             <Route path="/:childId" element={<Dashboard />} />
             <Route path="/" element={<Dashboard />} /> 
+            
       </Routes>
+      
       </Profile>
+      
     </Router>
     
     </div>

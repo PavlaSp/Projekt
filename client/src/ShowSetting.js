@@ -22,7 +22,7 @@ function ShowSetting () {
     'July', 'August', 'September', 'October', 'November', 'December'
   ];
 
-  const years = Array.from({length: 20}, (_, i) => new Date().getFullYear() - i);
+  const years = Array.from({length: 12}, (_, i) => 2024 + i);
 
   const dateInFormat = `${year}-${month < 10 ? `0${month}` : month}`;
 
@@ -67,22 +67,43 @@ function ShowSetting () {
       <h3>Reward Money </h3>
       <p> </p>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', margin: '4px', padding: '20px' }}>
-      <label>Fulfill Until Month:</label>
-      <select value={month} onChange={e => setMonth(e.target.value)}>
+     
+   
+    </div>
+   
+    <form className="row g-3 needs-validation" novalidate>
+      
+    <div className="col-md-2">
+      <label htmlFor="validationCustom01" className="form-label">Fulfill Until Month:</label>
+      <select
+        className="form-select"
+        id="validationCustom01"
+        required
+        value={month}
+        onChange={(e) => setMonth(e.target.value)}
+      >
         {months.map((m, i) => (
-          <option key={i+1} value={i+1}>{m}</option>
+          <option key={i + 1} value={i + 1}>
+            {m}
+          </option>
         ))}
       </select>
-      <select value={year} onChange={e => setYear(e.target.value)}>
+      </div>
+
+      <div className="col-md-2">
+      <label htmlFor="validationCustom02" className="form-label">Year:</label>         
+      <select className="form-select"
+        id="validationCustom02"
+        required value={year} onChange={e => setYear(e.target.value)}>
         {years.map(y => (
           <option key={y} value={y}>{y}</option>
         ))}
-      </select>
-      
-      <p>You selected: {dateInFormat}</p>
-    </div>
-      <label>Subject:</label>
-      <select value={subject} onChange={(e) => setSubject(e.target.value)}>
+        </select>
+       </div>
+
+    <div className="col-md-2">
+      <label for="validationCustom03" class="form-label">Subject:</label>
+      <select className="form-select" id="validationCustom03" required value={subject} onChange={(e) => setSubject(e.target.value)}>
         <option value="math">Math</option>
         <option value="czech">Czech</option>
         <option value="english">English</option>
@@ -90,16 +111,45 @@ function ShowSetting () {
         <option value="physics">Physics</option>
         <option value="biology">Biology</option>
         <option value="history">History</option>
+        <option value="biology">Biology</option>
       </select>
+      <div className="invalid-feedback">
+      Please select valid subject.
+    </div>
+  </div>
 
-      Grade: <input type="number" min="1" max="3"  value={grade} onChange={(e) => setGrade(e.target.value)} />
-      Enter Reward for Fulfilled Task: <input type="number" min="0"  value={reward} onChange={(e) => setReward(e.target.value)} /> Kč
+
+  <div className="col-md-2">
+  <label for="validationCustom04" class="form-label">Grade: </label> 
+  <input type="number" min="1" max="3" className="form-control" id="validationCustom04" required value={grade} onChange={(e) => setGrade(e.target.value)} />
+  
+  <div class="invalid-feedback">
+      Please select valid grade.
+    </div>
+      </div>
+
+      <div className="col-md-2">
+      <label for="validationCustom05" class="form-label">Task Reward in Kč:  </label> 
+      <input type="number" min="0"  className="form-control" id="validationCustom05" required value={reward} onChange={(e) => setReward(e.target.value)} /> 
+         <div class="invalid-feedback">
+      Please select valid grade.
+    </div>
+      </div> 
      
-      <button onClick={save}>Save Changes</button>
+      </form>
+
+      <div className="col-md-2" style={{ textAlign: 'right' }}>
+    <p>You selected: {dateInFormat}</p>
     </div>
+      <div class="col-12">
+      <button class="btn btn-primary" type="submit" onClick={save}>Save Changes</button>
+      </div>
     </div>
+ 
     </div>
-    
+   
+    </div>
+   
   );
 }
 function bodyStyle() {

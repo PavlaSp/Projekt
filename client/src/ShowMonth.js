@@ -6,7 +6,7 @@ import { ProfileContext } from './Profile';
 function ShowMonth({selectedDate}) {
  
   const [isCardVisible, setCardVisible] = useState(true);
-  const {monthlyList, taskList, activeProfile} = React.useContext(ProfileContext);
+  const {monthlyList, childList, taskList, activeProfile} = React.useContext(ProfileContext);
   if (!selectedDate || !activeProfile) {
     return null; 
   }
@@ -23,13 +23,18 @@ const date = new Date(selectedDate || Date.now());
 const selectedDateFormatted = date.toISOString().slice(0,7);
 console.log("Selected Date Formatted", selectedDateFormatted);
 
+let childData = childList.filter(
+  (child) => child.childId === activeProfile.id
+)[0];
+console.log("Child Data", childData);
+
 let monthlyData = monthlyList.filter(
   (monthly) => monthly.yearMonth === selectedDateFormatted && monthly.childId === activeProfile.id
 )[0];
 console.log("Monthly Data", monthlyData);
 
 
-let pocketAmount = monthlyData ? monthlyData.pocketAmount: 0;
+let pocketAmount = childData ? childData.pocketAmount: 0;
 let totalAmount = monthlyData ? monthlyData.totalAmount : 0;
 let totalTaskValue = monthlyData ? monthlyData.totalTaskValue : 0;
 
@@ -74,7 +79,11 @@ let unfinishedTaskList = unfinishedTasks.map(task => {
     <input 
   className="form-check-input" type="checkbox" value="" id="flexCheckDefault"
   disabled={new Date() > new Date(task.dateUntil)} 
-  onChange={() => handleFinishTask(task.id, selectedDateFormatted)} />
+  onChange={() => {
+    if(window.confirm('Do you want to save it as finished task?')) {
+      handleFinishTask(task.id, selectedDateFormatted)
+    }
+  }} />
   </div>  
   </div>
   </div>
