@@ -141,8 +141,8 @@ function ShowSetting () {
       <div className="col-md-2" style={{ textAlign: 'right' }}>
     <p>You selected: {dateInFormat}</p>
     </div>
-      <div class="col-12">
-      <button class="btn btn-primary" type="submit" onClick={save}>Save Changes</button>
+      <div className="col-12">
+      <button className="btn btn-primary" type="submit" onClick={save}>Save Changes</button>
       </div>
     </div>
  

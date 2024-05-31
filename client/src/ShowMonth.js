@@ -34,7 +34,7 @@ let monthlyData = monthlyList.filter(
 console.log("Monthly Data", monthlyData);
 
 
-let pocketAmount = childData ? childData.pocketAmount: 0;
+let pocketAmount = monthlyData ? monthlyData.pocketAmount: 0;
 let totalAmount = monthlyData ? monthlyData.totalAmount : 0;
 let totalTaskValue = monthlyData ? monthlyData.totalTaskValue : 0;
 
@@ -113,8 +113,8 @@ let finishedTaskList = finishedTasks.map(task => {
       <div className='dashboardStyle'>  
       <p> </p>
     
-      <button type="button" className="btn-close" onClick={handleCloseCard} aria-label="Close" class={ 'dashboardStyle' }>Close the card</button>
-      <div style={{textAlign:"right", paddingRight:"20px"}}><h2><p>{new Date(selectedDate).toLocaleString('en-us', { month: 'long', year: 'numeric' })}</p></h2>
+      <button type="button"  onClick={handleCloseCard} aria-label="Close" className={ 'dashboardStyle' }>Close the card</button>
+      <p></p><div style={{textAlign:"right", paddingRight:"20px"}}><h2>{new Date(selectedDate).toLocaleString('en-us', { month: 'long', year: 'numeric' })}</h2>
         </div> 
        
     <p> </p>

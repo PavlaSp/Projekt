@@ -19,7 +19,7 @@ const Profile = ({ children }) => {
     state: "ready",
     error: null,
     data: null,
-  });
+  }); 
   const [activeProfile, setActiveProfile] = useState('');
 
   
