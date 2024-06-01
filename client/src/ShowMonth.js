@@ -7,6 +7,7 @@ function ShowMonth({ selectedDate, monthlyList, taskList }) {
     const [isCardVisible, setCardVisible] = useState(true);
     const { childList, activeProfile } =
         React.useContext(ProfileContext);
+  
     if (!selectedDate || !activeProfile) {
         return null;
     }
@@ -14,31 +15,37 @@ function ShowMonth({ selectedDate, monthlyList, taskList }) {
     const handleCloseCard = () => {
         setCardVisible(false);
     };
+
     if (!isCardVisible) {
         return null;
     }
 
-    console.log("selectedDate", selectedDate);
+    
+    console.log("selectedDate: ", selectedDate);
     const date = new Date(selectedDate || Date.now());
     const selectedDateFormatted = date.toISOString().slice(0, 7);
-    console.log("Selected Date Formatted", selectedDateFormatted);
+    console.log("Selected Date Formatted: ", selectedDateFormatted);
 
+    console.log("childList: " + childList);
     let childData = childList.filter(
         (child) => child.childId === activeProfile.id
     )[0];
-    console.log("Child Data", childData);
+    console.log("Child Data: ", childData);
 
+    console.log("monthlyList: ", monthlyList);
     let monthlyData = monthlyList.filter(
         (monthly) =>
             monthly.yearMonth === selectedDateFormatted &&
             monthly.childId === activeProfile.id
     )[0];
-    console.log("Monthly Data", monthlyData);
+    console.log("Monthly Data: ", monthlyData);
 
     let pocketAmount = childData ? childData.pocketAmount : 0;
     let totalAmount = monthlyData ? monthlyData.totalAmount : 0;
     let totalTaskValue = monthlyData ? monthlyData.totalTaskValue : 0;
+    console.log("pocketAmount, totalAmount, totalTaskValue: " + pocketAmount + ", " + totalAmount + ", " + totalTaskValue + ".");
 
+    console.log("taskList: ", taskList);
     let taskData = taskList.filter(
         (task) =>
             (task.dateUntil === selectedDateFormatted ||
@@ -46,20 +53,22 @@ function ShowMonth({ selectedDate, monthlyList, taskList }) {
             task.childId === activeProfile.id
     );
     taskData = taskData ? taskData : [];
-    console.log("Tasks", taskData);
+    console.log("Tasks: ", taskData);
 
     let unfinishedTasks = taskData.filter(
         (task) => !task.dateFinished && task.dateUntil === selectedDateFormatted
     );
-    let finishedTasks = taskData.filter((task) => task.dateFinished);
+    let finishedTasks = taskData.filter((task) => task.dateFinished === selectedDate);
+    console.log("unfinishedTasks: " + unfinishedTasks);
+    console.log("finishedTasks: " + finishedTasks);
 
-    const handleFinishTask = (id, selectedDateFormatted) => {
+    const handleFinishTask = (id) => {
         fetch("http://localhost:8000/task/update", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
                 taskId: id,
-                dateFinished: selectedDateFormatted,
+                dateFinished: new Date().toISOString().slice(0, 7),
             }),
         })
             .then((response) => {
@@ -73,6 +82,9 @@ function ShowMonth({ selectedDate, monthlyList, taskList }) {
     };
 
     let unfinishedTaskList = unfinishedTasks.map((task) => {
+        let currentDate = new Date();
+        currentDate.setMonth(currentDate.getMonth() - 1);
+        let taskDateUntil = new Date(task.dateUntil);
         return (
             <div key={task.id}>
                 <div className="hstack gap-3">
@@ -95,7 +107,7 @@ function ShowMonth({ selectedDate, monthlyList, taskList }) {
                             type="checkbox"
                             value=""
                             id="flexCheckDefault"
-                            disabled={new Date() > new Date(task.dateUntil)}
+                            disabled={currentDate > taskDateUntil}
                             onChange={() => {
                                 if (
                                     window.confirm(
