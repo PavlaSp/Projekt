@@ -82,6 +82,9 @@ function ShowMonth({ selectedDate, monthlyList, taskList }) {
     };
 
     let unfinishedTaskList = unfinishedTasks.map((task) => {
+        let currentDate = new Date();
+        currentDate.setMonth(currentDate.getMonth() - 1);
+        let taskDateUntil = new Date(task.dateUntil);
         return (
             <div key={task.id}>
                 <div className="hstack gap-3">
@@ -104,7 +107,7 @@ function ShowMonth({ selectedDate, monthlyList, taskList }) {
                             type="checkbox"
                             value=""
                             id="flexCheckDefault"
-                            disabled={new Date() > new Date(task.dateUntil)}
+                            disabled={currentDate > taskDateUntil}
                             onChange={() => {
                                 if (
                                     window.confirm(
