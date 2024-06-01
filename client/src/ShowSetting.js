@@ -111,7 +111,7 @@ function ShowSetting () {
         <option value="physics">Physics</option>
         <option value="biology">Biology</option>
         <option value="history">History</option>
-        <option value="biology">Biology</option>
+        <option value="chemistry">Chemistry</option>
       </select>
       <div className="invalid-feedback">
       Please select valid subject.
